@@ -10,7 +10,7 @@ const bot = new Telegraf(ConfigParams.TOKEN)
 bot.start((ctx)=>{
     ctx.replyWithDice()
     ctx.reply(`Welcome ${ctx.message.from.first_name} ${ctx.message.from.last_name} lets display some Data\n Use these commands :\n
-Get Balance: /getBalance\n\n Close Order: /closeOrder\n\n Get Closed PnL: /getClosedPnl\n\n Buy: /Buy\n\n Sell: /Sell`)
+Buy: /Buy\n\n Exit Position: /Exit \n\n Get Wallet Balance: /getBalance\n\n Cancel Order: /closeOrder\n\n Get Closed PNL: /getClosedPnL`)
 })
 
 const getOptions = () => {
@@ -100,7 +100,7 @@ bot.command('Buy', async (ctx) => {
 })
 
 
-bot.command('Sell', async (ctx) => {
+bot.command('Exit', async (ctx) => {
 
     try {
         const bybit = new BybitExchange(getOptions())

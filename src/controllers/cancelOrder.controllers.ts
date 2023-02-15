@@ -20,7 +20,7 @@ async function cancleOrder(req: Request, res: Response) {
             error: "no request body"
         })
     } else {
-        const result = await bybitExchange.closeOrder(symbol)
+        const result = await bybitExchange.closeOrder({symbol:'BTCUSDT'})
         if (result === true) {
             res.status(200).json({
                 success: true,
