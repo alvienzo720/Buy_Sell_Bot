@@ -2,16 +2,20 @@ import { Telegraf } from "telegraf"
 import { ConfigParams } from "../config"
 import { BybitExchange } from "../exchange"
 import { normalizeeMessage } from "../utils/telegram"
+import { scheduleJob } from "node-schedule"
+
+//create a new telegraph instance form the telegraf class
 
 const bot = new Telegraf(ConfigParams.TOKEN)
 
-// bot.start((ctx) => ctx.reply(`Welcome Alvin lets display some Data\n Use these commands :\n
-//  getBalance\ncloseOrder\n getClosedPnl`))
-bot.start((ctx)=>{
+//creat a start command for our telgram bot and pass a message
+bot.start((ctx) => {
     ctx.replyWithDice()
     ctx.reply(`Welcome ${ctx.message.from.first_name} ${ctx.message.from.last_name} lets display some Data\n Use these commands :\n
-Buy: /Buy\n\n Exit Position: /Exit \n\n Get Wallet Balance: /getBalance\n\n Cancel Order: /closeOrder\n\n Get Closed PNL: /getClosedPnL`)
+Buy: /Buy\n\n Exit Position: /Exit \n\n Get Wallet Balance: /getBalance\n\n Cancel Order: /closeOrder\n\n Get Closed PNL: /getClosedPnl`)
 })
+
+// get the parameters and create a function for use 
 
 const getOptions = () => {
     return {
@@ -21,11 +25,14 @@ const getOptions = () => {
         testnet: true
     }
 }
-
-bot.command('getBalance', async (ctx) => {
+// the getBlanace command which returns the balance for USDT or any other coin thats is selected
+bot.command('getbalance', async (ctx) => {
+    // use the bybit helper class
     const bybit = new BybitExchange(getOptions())
 
     const { USDT }: any = await bybit.walletBalance({ coin: 'USDT' })
+
+    // our return message
 
     let message = `*\USDT\*`
     message += `\n Avaibale Balance: \`${USDT.available_balance}\``,
@@ -36,8 +43,8 @@ bot.command('getBalance', async (ctx) => {
     sendMessage(message)
 
 })
-
-bot.command('closeOrder', async (ctx) => {
+// close order command in telegram
+bot.command('closeorder', async (ctx) => {
     const bybit = new BybitExchange(getOptions())
 
     const order: any = await bybit.closeOrder({ symbol: "BTCUSDT" })
@@ -47,9 +54,8 @@ bot.command('closeOrder', async (ctx) => {
 
 })
 
-bot.command('getClosedPnl', async (ctx) => {
+bot.command('getclosedpnl', async (ctx) => {
     const bybit = new BybitExchange(getOptions())
-
     const DATA: any = await bybit.getClosedPnl({ symbol: "BTCUSDT" })
     let message = `*\CLOSED PNL\*`
     message += `\n Order Id: \`${DATA["data"][0]["order_id"]}\``
@@ -61,17 +67,16 @@ bot.command('getClosedPnl', async (ctx) => {
     sendMessage(message)
 
 })
+bot.command('buy', async (ctx) => {
 
-bot.command('Buy', async (ctx) => {
-    
     try {
         const bybit = new BybitExchange(getOptions())
         const price = Number(await bybit.getCurrentPrice('BTCUSDT'))
         const params = {
-            symbol: 'BTCUSDT', side: 'Buy', qty:0.5, order_type: 'Limit',
+            symbol: 'BTCUSDT', side: 'Buy', qty: 0.5, order_type: 'Limit',
             time_in_force: 'GoodTillCancel', reduce_only: false, close_on_trigger: false, price, position_idx: 0
         }
-        if (params){
+        if (params) {
             // params.qty = parseFloat((params.qty / price).toFixed(3))
             params.reduce_only = params.side === 'Buy' ? false : true
             params.price = params.side === 'Buy' ? price - 0.05 : price + 0.05
@@ -87,20 +92,20 @@ bot.command('Buy', async (ctx) => {
             sendMessage(message)
 
         }
-          
+
     } catch (error) {
         console.log("Sorry you Have no Position Yet")
         let message = `Sorry Current Position is Zero ❗️`
 
         sendMessage(message)
-        
+
     }
-    
-   
+
+
 })
 
 
-bot.command('Exit', async (ctx) => {
+bot.command('exit', async (ctx) => {
 
     try {
         const bybit = new BybitExchange(getOptions())
@@ -115,7 +120,7 @@ bot.command('Exit', async (ctx) => {
             params.price = params.side === 'Buy' ? price - 0.05 : price + 0.05
             const order = await bybit.makeOrder(params)
 
-            let message = `Placing an Order now`
+            let message = `Exiting Order`
             message += `\n Symbol: \`${order?.symbol}\``
             message += `\n Order Id: \` ${order?.price}\``
             message += `\n Oty: \`${order?.qty}\``

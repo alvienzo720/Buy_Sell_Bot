@@ -64,7 +64,7 @@ export class BybitExchange {
     async closeOrder(params: { symbol: string }): Promise<boolean> {
         try {
             console.log(params)
-            let { ret_code, ret_msg } = await this.linear.cancelAllActiveOrders({ symbol: "BTCUSDT" })
+            let { ret_code, ret_msg } = await this.linear.cancelAllActiveOrders(params)
 
             if (ret_code === 0) {
                 console.log("Order has been cancled Successfully")
@@ -93,7 +93,7 @@ export class BybitExchange {
     }) {
         let { ret_code, ret_msg, result } = await this.linear.getClosedPnl({ symbol: 'BTCUSDT' })
         if (ret_code === 0) {
-            // console.log(result)
+            console.log(result)
             return result
         } else {
             console.log(ret_code, ret_msg)
@@ -155,9 +155,10 @@ export class BybitExchange {
             } else {
                 trailByps = trailByps ?? 0.01
                 ourLviePrice = params.side == 'Buy' ? ourLviePrice - 0.05 : ourLviePrice + 0.05
-                let { ret_code, result, ret_msg } = await this.linear.replaceActiveOrder({  
+                let { ret_code, result, ret_msg } = await this.linear.replaceActiveOrder({
                     order_id: orderId,
-                    p_r_price: parseFloat((ourLviePrice).toFixed(2)),symbol: symbol })
+                    p_r_price: parseFloat((ourLviePrice).toFixed(2)), symbol: symbol
+                })
                 if (ret_code === 0) {
                     orderId = result.order_id
                     const msg = 'order replaced successfully'
