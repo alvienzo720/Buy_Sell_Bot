@@ -2,8 +2,8 @@ import { Markup, Telegraf } from "telegraf"
 import { ConfigParams } from "../config"
 import { BybitExchange } from "../exchange"
 import { normalizeeMessage } from "../utils/telegram"
-import { scheduleJob } from "node-schedule"
-import { inlineKeyboard } from "telegraf/typings/markup"
+import schedule from 'node-schedule'
+
 
 
 //create a new telegraph instance form the telegraf class
@@ -18,8 +18,8 @@ bot.start((ctx) => {
 
     const custom_keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('Buy', 'buy'), Markup.button.callback('Sell', 'sell')],
-        [Markup.button.callback('Get Balance', 'getbalance')],
-        [Markup.button.callback('Cancel Order', 'closeorder')],
+        [Markup.button.callback('Wallet Balance 💲', 'getbalance')],
+        [Markup.button.callback('Cancel Order ❌', 'closeorder')],
         [Markup.button.callback('Get Closed Pnl', 'getclosedpnl')],
 
 
@@ -78,9 +78,17 @@ bot.action('getclosedpnl', async (ctx) => {
     message += `\n Order Price: \`${DATA["data"][0]["order_price"]}\``
     message += `\n Closed price: \`${DATA["data"][0]["closed_size"]}\``
     message += `\n Qty: \`${DATA["data"][0]["qty"]}\``
+
+    
     sendMessage(message)
+    const job = schedule.scheduleJob('*/4 * * * * *', function () {
+        return bot.telegram.sendMessage(ConfigParams.CHAT_ID, message)
+    });
 
 })
+
+
+
 // Make a buy order
 bot.action('buy', async (ctx) => {
 
