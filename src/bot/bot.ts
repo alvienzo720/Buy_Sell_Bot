@@ -87,8 +87,6 @@ bot.action('getclosedpnl', async (ctx) => {
 
 })
 
-
-
 // Make a buy order
 bot.action('buy', async (ctx) => {
 
