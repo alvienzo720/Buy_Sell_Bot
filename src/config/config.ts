@@ -7,6 +7,6 @@ export const ConfigParams = {
     MAIN_URL: process.env.MAIN_URL || "",
     TOKEN: process.env.TOKEN || "",
     TELEGRAM_DELETE_MESSAGE_INTERVAL: 10,
-    WHITELISTED_USERS: [541365365,1946478135],
-    CHAT_ID:process.env.CHATID || ""
+    WHITELISTED_USERS: [],
+    CHAT_ID: process.env.CHAT_ID || ""
 }
