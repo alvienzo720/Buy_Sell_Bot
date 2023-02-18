@@ -1,8 +1,10 @@
-import { Telegraf } from "telegraf"
+import { Markup, Telegraf } from "telegraf"
 import { ConfigParams } from "../config"
 import { BybitExchange } from "../exchange"
 import { normalizeeMessage } from "../utils/telegram"
 import { scheduleJob } from "node-schedule"
+import { inlineKeyboard } from "telegraf/typings/markup"
+
 
 //create a new telegraph instance form the telegraf class
 
@@ -10,9 +12,20 @@ const bot = new Telegraf(ConfigParams.TOKEN)
 
 //creat a start command for our telgram bot and pass a message
 bot.start((ctx) => {
+
     ctx.replyWithDice()
-    ctx.reply(`Welcome ${ctx.message.from.first_name} ${ctx.message.from.last_name} lets display some Data\n Use these commands :\n
-Buy: /Buy\n\n Exit Position: /Exit \n\n Get Wallet Balance: /getBalance\n\n Cancel Order: /closeOrder\n\n Get Closed PNL: /getClosedPnl`)
+    ctx.reply(`Welcome ${ctx.message.from.first_name} lets Buy and Sell USDT\n Use these buttons below. 😊 `)
+
+    const custom_keyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('Buy', 'buy'), Markup.button.callback('Sell', 'sell')],
+        [Markup.button.callback('Get Balance', 'getbalance')],
+        [Markup.button.callback('Cancel Order', 'closeorder')],
+        [Markup.button.callback('Get Closed Pnl', 'getclosedpnl')],
+
+
+    ])
+    ctx.reply('Please select any option:', { reply_markup: { inline_keyboard: custom_keyboard.reply_markup.inline_keyboard } })
+
 })
 
 // get the parameters and create a function for use 
@@ -26,7 +39,8 @@ const getOptions = () => {
     }
 }
 // the getBlanace command which returns the balance for USDT or any other coin thats is selected
-bot.command('getbalance', async (ctx) => {
+
+bot.action('getbalance', async (ctx) => {
     // use the bybit helper class
     const bybit = new BybitExchange(getOptions())
 
@@ -44,7 +58,7 @@ bot.command('getbalance', async (ctx) => {
 
 })
 // close order command in telegram
-bot.command('closeorder', async (ctx) => {
+bot.action('closeorder', async (ctx) => {
     const bybit = new BybitExchange(getOptions())
 
     const order: any = await bybit.closeOrder({ symbol: "BTCUSDT" })
@@ -53,8 +67,8 @@ bot.command('closeorder', async (ctx) => {
     sendMessage(message)
 
 })
-
-bot.command('getclosedpnl', async (ctx) => {
+// get closed PNL
+bot.action('getclosedpnl', async (ctx) => {
     const bybit = new BybitExchange(getOptions())
     const DATA: any = await bybit.getClosedPnl({ symbol: "BTCUSDT" })
     let message = `*\CLOSED PNL\*`
@@ -67,7 +81,8 @@ bot.command('getclosedpnl', async (ctx) => {
     sendMessage(message)
 
 })
-bot.command('buy', async (ctx) => {
+// Make a buy order
+bot.action('buy', async (ctx) => {
 
     try {
         const bybit = new BybitExchange(getOptions())
@@ -103,9 +118,8 @@ bot.command('buy', async (ctx) => {
 
 
 })
-
-
-bot.command('exit', async (ctx) => {
+// exit an order    
+bot.action('sell', async (ctx) => {
 
     try {
         const bybit = new BybitExchange(getOptions())
