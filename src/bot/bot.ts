@@ -2,7 +2,7 @@ import { Markup, Telegraf } from "telegraf"
 import { ConfigParams } from "../config"
 import { BybitExchange } from "../exchange"
 import { normalizeeMessage } from "../utils/telegram"
-import schedule from 'node-schedule'
+import { getPnl } from "../utils/getPnl"
 
 
 
@@ -17,11 +17,8 @@ bot.start((ctx) => {
     ctx.reply(`Welcome ${ctx.message.from.first_name} lets Buy and Sell USDT\n Use these buttons below. 😊 `)
 
     const custom_keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('Buy', 'buy'), Markup.button.callback('Sell', 'sell')],
         [Markup.button.callback('Wallet Balance 💲', 'getbalance')],
         [Markup.button.callback('Cancel Order ❌', 'closeorder')],
-        [Markup.button.callback('Get Closed Pnl', 'getclosedpnl')],
-
 
     ])
     ctx.reply('Please select any option:', { reply_markup: { inline_keyboard: custom_keyboard.reply_markup.inline_keyboard } })
@@ -30,20 +27,18 @@ bot.start((ctx) => {
 
 // get the parameters and create a function for use 
 
-const getOptions = () => {
-    return {
-        key: ConfigParams.API_KEY,
-        secret: ConfigParams.API_SECRET,
-        baseUrl: ConfigParams.MAIN_URL,
-        testnet: true
-    }
+const getOptions = {
+
+    key: ConfigParams.API_KEY,
+    secret: ConfigParams.API_SECRET,
+    baseUrl: ConfigParams.MAIN_URL,
+    testnet: true
+
 }
 // the getBlanace command which returns the balance for USDT or any other coin thats is selected
-
+const bybit = new BybitExchange(getOptions)
 bot.action('getbalance', async (ctx) => {
     // use the bybit helper class
-    const bybit = new BybitExchange(getOptions())
-
     const { USDT }: any = await bybit.walletBalance({ coin: 'USDT' })
 
     // our return message
@@ -59,8 +54,6 @@ bot.action('getbalance', async (ctx) => {
 })
 // close order command in telegram
 bot.action('closeorder', async (ctx) => {
-    const bybit = new BybitExchange(getOptions())
-
     const order: any = await bybit.closeOrder({ symbol: "BTCUSDT" })
     let message = `Order Cancled  ❌`
 
@@ -68,86 +61,55 @@ bot.action('closeorder', async (ctx) => {
 
 })
 // get closed PNL
-bot.action('getclosedpnl', async (ctx) => {
-    const bybit = new BybitExchange(getOptions())
-    const DATA: any = await bybit.getClosedPnl({ symbol: "BTCUSDT" })
-    let message = `*\CLOSED PNL\*`
-    message += `\n Order Id: \`${DATA["data"][0]["order_id"]}\``
-    message += `\n Symbol: \`${DATA["data"][0]["side"]}\``
-    message += `\n Closed_PnL: \`${DATA["data"][0]["closed_pnl"]}\``
-    message += `\n Order Price: \`${DATA["data"][0]["order_price"]}\``
-    message += `\n Closed price: \`${DATA["data"][0]["closed_size"]}\``
-    message += `\n Qty: \`${DATA["data"][0]["qty"]}\``
-
-    
-    sendMessage(message)
-    const job = schedule.scheduleJob('*/4 * * * * *', function () {
-        return bot.telegram.sendMessage(ConfigParams.CHAT_ID, message)
-    });
-
-})
+bot.command('getpnl', async (ctx) => {
+    ctx.reply("Getting Positions")
+    try {
+        getPnl.start()
+    } catch (error) {
+        console.log(error)
+    }
+});
 
 // Make a buy order
-bot.action('buy', async (ctx) => {
-
+bot.command('buy', async (ctx) => {
     try {
-        const bybit = new BybitExchange(getOptions())
         const price = Number(await bybit.getCurrentPrice('BTCUSDT'))
         const params = {
             symbol: 'BTCUSDT', side: 'Buy', qty: 0.5, order_type: 'Limit',
             time_in_force: 'GoodTillCancel', reduce_only: false, close_on_trigger: false, price, position_idx: 0
         }
-        if (params) {
-            // params.qty = parseFloat((params.qty / price).toFixed(3))
-            params.reduce_only = params.side === 'Buy' ? false : true
-            params.price = params.side === 'Buy' ? price - 0.05 : price + 0.05
-            const order = await bybit.makeOrder(params)
-
+        // params.qty = parseFloat((params.qty / price).toFixed(3))
+        params.price = params.side === 'Buy' ? price - 0.05 : price + 0.05
+        const { result, ret_code } = await bybit.makeOrder(params)
+        if (ret_code === 0) {
             let message = `Placing an Order now`
-            message += `\n Symbol: \`${order?.symbol}\``
-            message += `\n Order Id: \` ${order?.price}\``
-            message += `\n Oty: \`${order?.qty}\``
-            message += `\n Side: \`${order?.side}\``
-            message += `\n Order Status: \` ${order?.order_status}\``
-
+            message += `\n Symbol: \`${result?.symbol}\``
+            message += `\n Order Id: \` ${result?.price}\``
+            message += `\n Oty: \`${result?.qty}\``
+            message += `\n Side: \`${result?.side}\``
+            message += `\n Order Status: \` ${result?.order_status}\``
             sendMessage(message)
-
         }
-
     } catch (error) {
-        console.log("Sorry you Have no Position Yet")
-        let message = `Sorry Current Position is Zero ❗️`
-
-        sendMessage(message)
-
+        sendMessage(`Sorry Current Position is Zero ❗️`)
     }
-
 
 })
 // exit an order    
-bot.action('sell', async (ctx) => {
+bot.command('sell', async (ctx) => {
 
     try {
-        const bybit = new BybitExchange(getOptions())
         const price = Number(await bybit.getCurrentPrice('BTCUSDT'))
         const params = {
             symbol: 'BTCUSDT', side: 'Sell', qty: 0.5, order_type: 'Limit',
             time_in_force: 'GoodTillCancel', reduce_only: true, close_on_trigger: false, price, position_idx: 0
         }
         if (params) {
-            // params.qty = parseFloat((params.qty / price).toFixed(3))
             params.reduce_only = params.side === 'Buy' ? false : true
             params.price = params.side === 'Buy' ? price - 0.05 : price + 0.05
             const order = await bybit.makeOrder(params)
 
-            let message = `Exiting Order`
-            message += `\n Symbol: \`${order?.symbol}\``
-            message += `\n Order Id: \` ${order?.price}\``
-            message += `\n Oty: \`${order?.qty}\``
-            message += `\n Side: \`${order?.side}\``
-            message += `\n Order Status: \` ${order?.order_status}\``
 
-            sendMessage(message)
 
         }
 
@@ -159,6 +121,40 @@ bot.action('sell', async (ctx) => {
 
     }
 
+
+})
+
+bot.command('exit', async (ctx: any) => {
+    const { positions, success, ret_msg } = await bybit.getPositions()
+    const livePrice: any = await bybit.getCurrentPrice("BTCUSDT")
+    if (success === true) {
+        positions.map(async (item: any) => {
+            if (item) {
+                const { market, size, side, openSize, realisedPnl, liq_price } = item
+                const { result, ret_code, ret_msg } = await bybit.makeOrder({
+                    symbol: market,
+                    side: side === "Buy" ? "Sell" : "Buy",
+                    price: side === "Buy" ? Number(livePrice) - 0.05 : Number(livePrice) + 0.05,
+                    qty: size,
+                    order_type: "Limit",
+                    time_in_force: "GoodTillCancel",
+                    reduce_only: true,
+                    position_idx: 0,
+                    close_on_trigger: true
+                })
+                if (ret_code === 0 && result) {
+                    getPnl.stop()
+                    let message = `Position Closed`
+                    message += `\n Symbol: \`${result?.symbol}\``
+                    message += `\n Order Id: \` ${result?.price}\``
+                    message += `\n Oty: \`${result?.qty}\``
+                    message += `\n Side: \`${side}\``
+                    message += `\n pnl: \` ${realisedPnl}\``
+                    sendMessage(message)
+                }
+            }
+        })
+    }
 
 })
 
