@@ -1,4 +1,5 @@
 import { LinearClient, LinearOrder, LinearPositionIdx, SymbolIntervalFromLimitParam } from "bybit-api";
+import { sendMessage } from "../bot";
 import { sleep } from "../utils/sleep";
 
 
@@ -19,21 +20,87 @@ export class BybitExchange {
     async makeOrder(params: {
         symbol: string, side: any, qty: number, order_type: any,
         time_in_force: any, reduce_only: boolean, close_on_trigger: boolean, price: number, position_idx: LinearPositionIdx
-    }): Promise<LinearOrder | null> {
-        console.log(params)
+    }): Promise<any | null> {
         let { result, ret_code, ret_msg } = await this.linear.placeActiveOrder(params)
         if (ret_code === 0) {
-            console.log(result)
-            return result
-        } else {
+            return ({ result, ret_code, ret_msg })
+        } else if (ret_code === 130125) {
+            sendMessage("You have no position, place more order")
+        } else if (ret_code === 10001) {
+            let message = params.side === " buy" ? "place order with price below current price" : "place order with price above current price"
+            sendMessage(message)
+        }
+        else {
             console.log(ret_code, ret_msg)
             throw new Error(ret_msg);
-
         }
         return null
-
     }
 
+    getPositions = async (): Promise<{
+        positions: {
+            market: string
+            size: number
+            side: string
+            openSize: number
+            realisedPnl: number
+            liq_price: number
+        }[]
+        success: boolean
+        ret_msg?: string
+    }> => {
+        let { result, ret_code, ret_msg } = await this.linear.getPosition()
+        if (ret_code === 0) {
+            return {
+                positions: result
+                    .filter(
+                        (position: {
+                            is_valid: boolean
+                            data: {
+                                symbol: string
+                                side: string
+                                size: number
+                                unrealised_pnl: number
+                                entry_price: number
+                                liq_price: number
+                            }
+                        }) => position.data.size > 0,
+                    )
+                    .map(
+                        (position: {
+                            data: {
+                                symbol: string
+                                side: string
+                                size: number
+                                unrealised_pnl: number
+                                entry_price: number
+                                liq_price: number
+                            }
+                        }) => {
+                            return {
+                                market: position.data.symbol,
+                                size: position.data.size,
+                                side: position.data.side,
+                                openSize: position.data.size,
+                                realisedPnl: position.data.unrealised_pnl,
+                                entry_price: position.data.entry_price,
+                                liq_price: position.data.liq_price,
+                            }
+                        },
+                        ),
+                success: true,
+            }
+        }
+        if (ret_msg?.includes('please check your timestamp')) {
+            console.log('Timestamp error, retrying...')
+            await sleep(1700)
+        }
+        return {
+            positions: [],
+            success: false,
+            ret_msg,
+        }
+    }
     //get Current price Helper
 
     async getCurrentPrice(symbol: string): Promise<number | null> {
