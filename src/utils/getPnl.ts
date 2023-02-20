@@ -11,7 +11,6 @@ const getOptions = {
 }
 const bybit = new BybitExchange(getOptions)
 export const getPnl = schedule(" */5    *    *    *    *    *", async () => {
-    // console.log("getting pnl")
     const { positions, success, ret_msg } = await bybit.getPositions()
     // console.log(success, ret_msg, positions)
     if (success === true) {
