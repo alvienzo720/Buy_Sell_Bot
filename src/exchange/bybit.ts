@@ -27,7 +27,7 @@ export class BybitExchange {
         } else if (ret_code === 130125) {
             sendMessage("You have no position, place more order")
         } else if (ret_code === 10001) {
-            let message = params.side === " buy" ? "place order with price below current price" : "place order with price above current price"
+            let message = params.side === " buy" ? "Place order with price below current price" : "Place order with price above current price"
             sendMessage(message)
         }
         else {
