@@ -32,12 +32,10 @@ bot.start((ctx) => {
 // get the parameters and create a function for use 
 
 const getOptions = {
-
     key: ConfigParams.API_KEY,
     secret: ConfigParams.API_SECRET,
     baseUrl: ConfigParams.MAIN_URL,
     testnet: true
-
 }
 // the getBlanace command which returns the balance for USDT or any other coin thats is selected
 const bybit = new BybitExchange(getOptions)
@@ -46,6 +44,8 @@ bot.action('getbalance', async (ctx) => {
         getWalletBalance()
     } catch (error) {
         console.log(error)
+        let message = "Could not get Wallet Balance"
+        sendMessage(message)
     }
 })
 // close order command in telegram
@@ -54,6 +54,8 @@ bot.action('closeorder', async (ctx) => {
         closeOrder()
     } catch (error) {
         console.log(error)
+        let message = "Could not Cancle Order"
+        sendMessage(message)
     }
 })
 // get closed PNL
@@ -63,6 +65,8 @@ bot.command('getpnl', async (ctx) => {
         getPnl.start()
     } catch (error) {
         console.log(error)
+        let message = "Couldnt get Positions"
+        sendMessage(message)
     }
 });
 
@@ -90,6 +94,8 @@ bot.command('exit', async (ctx: any) => {
         exitOrder()
     } catch (error) {
         console.log(error)
+        let message = "Could not exit Order"
+        sendMessage(message)
     }
 })
 
