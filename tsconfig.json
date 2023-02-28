@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ESNext", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "target": "ESNext", 
+    "resolveJsonModule": true,/* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     "lib": [
       "ESNext"
     ],

@@ -12,7 +12,7 @@ const bybitExchange = new BybitExchange({
 
 
 
-async function cancleOrder(req: Request, res: Response) {
+async function cancleOrderController(req: Request, res: Response) {
     let { symbol } = req.body
     if (!symbol) {
         console.error('no request')
@@ -40,4 +40,4 @@ async function cancleOrder(req: Request, res: Response) {
 
 
 
-export { cancleOrder }
+export { cancleOrderController }

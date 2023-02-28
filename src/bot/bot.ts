@@ -1,6 +1,5 @@
 import { Markup, Telegraf } from "telegraf"
 import { ConfigParams } from "../config"
-import { BybitExchange } from "../exchange"
 import { normalizeeMessage } from "../utils/telegram"
 import { getPnl } from "../utils/getPnl"
 import { buy } from "../utils/buy"
@@ -29,16 +28,8 @@ bot.start((ctx) => {
 
 })
 
-// get the parameters and create a function for use 
-
-const getOptions = {
-    key: ConfigParams.API_KEY,
-    secret: ConfigParams.API_SECRET,
-    baseUrl: ConfigParams.MAIN_URL,
-    testnet: true
-}
 // the getBlanace command which returns the balance for USDT or any other coin thats is selected
-const bybit = new BybitExchange(getOptions)
+
 bot.action('getbalance', async (ctx) => {
     try {
         getWalletBalance()
@@ -69,7 +60,6 @@ bot.command('getpnl', async (ctx) => {
         sendMessage(message)
     }
 });
-
 // Make a buy order
 bot.command('buy', async (ctx) => {
     try {
@@ -78,7 +68,7 @@ bot.command('buy', async (ctx) => {
         sendMessage(`Sorry Current Position is Zero ❗️`)
     }
 })
-// exit an order    
+// sell order    
 bot.command('sell', async (ctx) => {
     try {
         sell()
@@ -88,7 +78,7 @@ bot.command('sell', async (ctx) => {
         sendMessage(message)
     }
 })
-
+// exit order
 bot.command('exit', async (ctx: any) => {
     try {
         exitOrder()
@@ -98,7 +88,7 @@ bot.command('exit', async (ctx: any) => {
         sendMessage(message)
     }
 })
-
+// return message
 const sendMessage = async (message: string, delete_message?: boolean) => {
     try {
         for (const id of ConfigParams.WHITELISTED_USERS) {
@@ -124,7 +114,5 @@ const sendMessage = async (message: string, delete_message?: boolean) => {
 }
 
 export { bot, sendMessage }
-function getWalletBalanc() {
-    throw new Error("Function not implemented.")
-}
+
 
