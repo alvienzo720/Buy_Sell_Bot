@@ -1,15 +1,17 @@
 import { Router } from "express";
-import { makeOrder, cancleOrder, getClosedPnl, getBalance } from "../../controllers";
-import { getKline } from "../../controllers/getKline.controllers";
+import { makeOrder, getClosedPnl, getBalance, getKline, cancleOrderController } from "../../controllers";
+import { getQuote } from "../../exchange";
+
 
 
 const router = Router()
 
 router.post('/make-order', makeOrder)
-router.post('/cancel-order', cancleOrder)
+router.post('/cancel-order', cancleOrderController)
 router.get('/get-closedPnl', getClosedPnl)
 router.get('/get-kline', getKline)
 router.get('/get-balance', getBalance)
+router.get('/get-uniswap-quote',getQuote)
 
 
 export { router as makeOrderRoute }

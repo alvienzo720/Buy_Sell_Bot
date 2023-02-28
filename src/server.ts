@@ -13,7 +13,8 @@ const start = async () => {
     console.log(`---`.repeat(10))
     bot.launch().then(() => {
 
-    }).catch(() => {
+    }).catch((error) => {
+        console.log(error)
 
     })
 
