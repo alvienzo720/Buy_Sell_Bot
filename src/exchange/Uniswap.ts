@@ -1,60 +1,51 @@
-import { ethers } from 'ethers';
-import { computePoolAddress } from '@uniswap/v3-sdk';
-import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
-import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
-import { CurrentConfig } from '../config';
-import { POOL_FACTORY_CONTRACT_ADDRESS, QUOTER_CONTRACT_ADDRESS } from '../config/contants'
-import { fromReadableAmount, getProvider, toReadableAmount } from '../utils/uniswapQuote';
+import { ABI } from "../config/ABI";
+import { ethers } from "ethers";
+import { Request, Response } from "express";
+
+const provider = new ethers.providers.JsonRpcProvider('https://goerli.infura.io/v3/ec84c9b967de4010b5ace262fa78bb6e')
+
+const tokenIn = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
+const tokenOut = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
+const privateKey = 'db50acc44a9eee0a59abf844f18703eb1c5784f8a2606f4d73ba622fab7024b6';
+const routerAddress = '0xE592427A0AEce92De3Edee1F18E0157C05861564';
 
 
-export async function getQuote(): Promise<string> {
-    const quoterContract = new ethers.Contract(
-        QUOTER_CONTRACT_ADDRESS,
-        Quoter.abi,
-        getProvider()
-    )
-    const poolConstants = await getPoolConstants()
 
-    const quotedAmountOut = await quoterContract.callStatic.quoteExactInputSingle(
-        poolConstants.token0,
-        poolConstants.token1,
-        poolConstants.fee,
-        fromReadableAmount(
-            CurrentConfig.tokens.amountIn,
-            CurrentConfig.tokens.in.decimals
-        ).toString(),
-        0
-    )
 
-    return toReadableAmount(quotedAmountOut, CurrentConfig.tokens.out.decimals)
-}
+async function makeABuy(req: Request, res: Response) {
+    try {
+        if (req.body) {
+            const { amountIn, amountOutMin, path, to, deadline } = req.body
+            const wallet = new ethers.Wallet(privateKey, provider);
+            const router = new ethers.Contract(routerAddress, ABI, wallet);
 
-async function getPoolConstants(): Promise<{
-    token0: string
-    token1: string
-    fee: number
-}> {
-    const currentPoolAddress = computePoolAddress({
-        factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
-        tokenA: CurrentConfig.tokens.in,
-        tokenB: CurrentConfig.tokens.out,
-        fee: CurrentConfig.tokens.poolFee,
-    })
+            const tx = await router.swapExactTokensForTokens(
+                amountIn,
+                amountOutMin,
+                path,
+                to,
+                deadline,
+                {
+                    gasLimit: 200000,
+                    gasPrice: ethers.utils.parseUnits('10.0', 'gwei'),
+                },
+            );
+            console.log(`Transaction hash: ${tx.hash}`);
+            const receipt = await tx.wait();
+            console.log(`Transaction was mined in block ${receipt.blockNumber}`);
+            res.status(200).json({
+                success: true,
+                msg: 'Order  Successulfully'
+            });
+        }
+    } catch (error) {
+        console.log(error)
 
-    const poolContract = new ethers.Contract(
-        currentPoolAddress,
-        IUniswapV3PoolABI.abi,
-        getProvider()
-    )
-    const [token0, token1, fee] = await Promise.all([
-        poolContract.token0(),
-        poolContract.token1(),
-        poolContract.fee(),
-    ])
-
-    return {
-        token0,
-        token1,
-        fee,
     }
+
+
+
+
 }
+
+export { makeABuy }

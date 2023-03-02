@@ -2,6 +2,7 @@ import { sendMessage } from "../bot"
 import { ConfigParams } from "../config"
 import { BybitExchange } from "../exchange"
 import { getPnl } from "./getPnl"
+
 const getOptions = {
     key: ConfigParams.API_KEY,
     secret: ConfigParams.API_SECRET,
@@ -10,7 +11,6 @@ const getOptions = {
 
 }
 const bybit = new BybitExchange(getOptions)
-
 
 export const buy = async () => {
     const price = Number(await bybit.getCurrentPrice('BTCUSDT'))
