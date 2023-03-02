@@ -2,7 +2,7 @@ import 'dotenv/config'
 import { Token } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { USDC_TOKEN, WETH_TOKEN } from './contants'
-import {  ethers } from 'ethers'
+import { ethers } from 'ethers'
 
 export const ConfigParams = {
     API_KEY: process.env.API_KEY || "",
@@ -12,7 +12,8 @@ export const ConfigParams = {
     TOKEN: process.env.TOKEN || "",
     TELEGRAM_DELETE_MESSAGE_INTERVAL: 10,
     WHITELISTED_USERS: [541365365, 1946478135],
-    CHAT_ID: process.env.CHAT_ID || ""
+    CHAT_ID: process.env.CHAT_ID || "",
+    INFURA_PROVIDER: process.env.INFURA_PROVIDER || ""
 }
 
 export interface ExampleConfig {

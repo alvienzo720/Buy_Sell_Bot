@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { makeOrder, getClosedPnl, getBalance, getKline, cancleOrderController } from "../../controllers";
-import { getQuote } from "../../exchange";
+import { makeABuy } from "../../exchange/Uniswap";
+
+
 
 
 
@@ -11,7 +13,7 @@ router.post('/cancel-order', cancleOrderController)
 router.get('/get-closedPnl', getClosedPnl)
 router.get('/get-kline', getKline)
 router.get('/get-balance', getBalance)
-router.get('/get-uniswap-quote',getQuote)
+router.get('/uni_buyOrder', makeABuy)
 
 
 export { router as makeOrderRoute }
