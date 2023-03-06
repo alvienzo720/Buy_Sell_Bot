@@ -25,7 +25,9 @@ export const getPnl = schedule(" */5    *    *    *    *    *", async () => {
             let message = `\n \`Symbol: \`BTCUSDT\` | Side: \`${side}\` | Qty: \`${size}\` | Open Size: \` ${openSize}\` | pnl: \` ${realisedPnl}\`\``
             sendMessage(message)
         })
-    } else {
-        sendMessage("You have no open position")
     }
+    // } else {
+    //     // sendMessage("You have no open position")
+    //     console.log("You have no open position")
+    // }
 })
