@@ -5,7 +5,6 @@ const erc20interface = new utils.Interface(ABI)
 const provider = new providers.WebSocketProvider(
     'wss://mainnet.infura.io/ws/v3/68961d62789e403aa86ee13a2d6406b0'
 )
-
 const main = () => {
     try {
         provider.on('pending', async (txHash: string) => {
@@ -18,12 +17,13 @@ const main = () => {
                     const txData = decode(txHash, inputData)
                     if (txData) {
                         console.log('\n\n ', txData!.name, txHash, new Date())
+                        
                     }
+                    console.log(txResponse.gasPrice)
                 }
             } else {
                 wait(15000)
                 const txResponse = await getTx(txHash)
-
                 if (txResponse) {
                     const inputData = txResponse!.data
                     if (inputData != '0x') {
@@ -49,7 +49,6 @@ const getTx = async (txHash: string) => {
         console.log('Error getting tx ', txHash, error)
     }
 }
-
 const decode = (txHash: string, inputData: string) => {
     try {
         const txData = erc20interface.parseTransaction({ data: inputData })
@@ -60,7 +59,6 @@ const decode = (txHash: string, inputData: string) => {
         // console.log("Error ", txHash, error)
     }
 }
-
 const wait = async (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }

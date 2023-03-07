@@ -7,7 +7,8 @@ import { sell } from "../utils/sell"
 import { getWalletBalance } from "../utils/getwalletbalance"
 import { exitOrder } from "../utils/exit"
 import { closeOrder } from "../utils/closeOrder"
-import { buyTokenUniswap, getBalanceUniswap } from "../exchange/uniswap/Uniswap"
+import { buyTokenUniswap, getBalanceUniswap } from "../exchange/uniswap/buyToken"
+import { sellTokenUniswap } from "../exchange/uniswap/sellToken"
 
 
 //create a new telegraph instance form the telegraf class
@@ -100,6 +101,15 @@ bot.command('buytokeuniswap', async (ctx: any) => {
     }
 })
 
+bot.command('selltokenuniswap', async (ctx: any) => {
+    try {
+        sellTokenUniswap()
+    } catch (error) {
+        console.log(error)
+        let message = "Could not sell token"
+        sendMessage(message)
+    }
+})
 bot.command('walletbalanceuniswap', async (ctx: any) => {
     try {
         getBalanceUniswap()

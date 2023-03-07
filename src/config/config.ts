@@ -1,8 +1,5 @@
 import 'dotenv/config'
-import { Token } from '@uniswap/sdk-core'
-import { FeeAmount } from '@uniswap/v3-sdk'
-import { USDC_TOKEN, WETH_TOKEN } from './contants'
-
+import { ethers } from 'ethers'
 
 export const ConfigParams = {
     API_KEY: process.env.API_KEY || "",
@@ -17,41 +14,14 @@ export const ConfigParams = {
 }
 
 export const UniswapConfigs = {
-    provider_test_net: process.env.provider_test_net || "",
+   
     tokenIn: process.env.tokenIn || "",
     tokenOut: process.env.tokenOut || "",
-    privateKey: process.env.privateKey || "",
-    routerAddress: process.env.routerAddress || "",
+    privateKey: 'db50acc44a9eee0a59abf844f18703eb1c5784f8a2606f4d73ba622fab7024b6' ,
+    routerAddress:'0xE592427A0AEce92De3Edee1F18E0157C05861564',
 
 }
 
-export interface ExampleConfig {
-    rpc: {
-        local: string
-        mainnet: string
-    }
-    tokens: {
-        in: any
-        amountIn: number
-        out: any
-        poolFee: number
-    }
-}
-
-// Example Configuration
-
-export const CurrentConfig: ExampleConfig = {
-    rpc: {
-        local: 'http://localhost:8545',
-        mainnet: 'https://mainnet.infura.io/v3/ec84c9b967de4010b5ace262fa78bb6e',
-    },
-    tokens: {
-        in: USDC_TOKEN,
-        amountIn: 1000,
-        out: WETH_TOKEN,
-        poolFee: FeeAmount.MEDIUM,
-    },
-}
 
 
 
