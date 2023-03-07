@@ -3,8 +3,6 @@ import { ethers, providers, utils } from "ethers";
 import { sendMessage } from "../../bot";
 import { UniswapConfigs } from "../../config";
 
-// const tokenIn = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
-// const tokenOut = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 const tokenIn = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D' //UNI
 const tokenOut = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' //WETH
 const privateKey = 'db50acc44a9eee0a59abf844f18703eb1c5784f8a2606f4d73ba622fab7024b6';
@@ -46,7 +44,7 @@ try {
     
 } catch (error) {
     console.log(error);
-    
+
     
 }
    
