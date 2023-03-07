@@ -7,8 +7,9 @@ import { sell } from "../utils/sell"
 import { getWalletBalance } from "../utils/getwalletbalance"
 import { exitOrder } from "../utils/exit"
 import { closeOrder } from "../utils/closeOrder"
-import { buyTokenUniswap, getBalanceUniswap } from "../exchange/uniswap/buyToken"
+import { buyTokenUniswap } from "../exchange/uniswap/buyToken"
 import { sellTokenUniswap } from "../exchange/uniswap/sellToken"
+import { getBalanceUniswap } from "../exchange/uniswap/getWalletbalance"
 
 
 //create a new telegraph instance form the telegraf class

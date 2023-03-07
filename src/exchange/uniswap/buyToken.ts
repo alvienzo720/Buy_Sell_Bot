@@ -1,10 +1,9 @@
 import { ABI } from "../../config/ABI";
-import { ethers, providers, utils } from "ethers";
+import { ethers} from "ethers";
 import { sendMessage } from "../../bot";
-import { UniswapConfigs } from "../../config";
 
 const tokenIn = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
-const tokenOut = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
+const tokenOut = '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984';
 const privateKey = 'db50acc44a9eee0a59abf844f18703eb1c5784f8a2606f4d73ba622fab7024b6';
 const routerAddress = '0xE592427A0AEce92De3Edee1F18E0157C05861564';
 
@@ -14,16 +13,6 @@ const amountIn = ethers.utils.parseEther('0.001');
 const amountOutMin = 0;
 const router = new ethers.Contract(routerAddress, ABI, wallet);
 
-async function getBalanceUniswap() {
-    try {
-        const balance = await wallet.getBalance();
-        const output_balance = parseFloat(ethers.utils.formatEther(balance)).toFixed(4);
-        sendMessage(`Balance: ${output_balance} ETH`)
-        // console.log(output_balance);
-    } catch (error) {
-        console.log(error)
-    }
-}
 
 async function buyTokenUniswap() {
     try {
@@ -56,4 +45,7 @@ async function buyTokenUniswap() {
     }
 }
 
-export { buyTokenUniswap, getBalanceUniswap }
+export { buyTokenUniswap }
+
+
+
