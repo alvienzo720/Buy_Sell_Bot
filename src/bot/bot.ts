@@ -7,7 +7,7 @@ import { sell } from "../utils/sell"
 import { getWalletBalance } from "../utils/getwalletbalance"
 import { exitOrder } from "../utils/exit"
 import { closeOrder } from "../utils/closeOrder"
-import { buyTokenUniswap, getBalanceUniswap } from "../exchange/Uniswap"
+import { buyTokenUniswap, getBalanceUniswap } from "../exchange/uniswap/Uniswap"
 
 
 //create a new telegraph instance form the telegraf class
@@ -105,7 +105,7 @@ bot.command('walletbalanceuniswap', async (ctx: any) => {
         getBalanceUniswap()
     } catch (error) {
         console.log(error)
-        let message = "Could not get wallet balance"    
+        let message = "Could not get wallet balance"
         sendMessage(message)
     }
 })
