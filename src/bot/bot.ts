@@ -1,15 +1,15 @@
 import { Markup, Telegraf } from "telegraf"
 import { ConfigParams } from "../config"
 import { normalizeeMessage } from "../utils/telegram"
-import { getPnl } from "../utils/getPnl"
-import { buy } from "../utils/buy"
-import { sell } from "../utils/sell"
-import { getWalletBalance } from "../utils/getwalletbalance"
-import { exitOrder } from "../utils/exit"
-import { closeOrder } from "../utils/closeOrder"
 import { buyTokenUniswap } from "../exchange/uniswap/buyToken"
 import { sellTokenUniswap } from "../exchange/uniswap/sellToken"
 import { getBalanceUniswap } from "../exchange/uniswap/getWalletbalance"
+import { getWalletBalance } from "../exchange/bybit/getwalletbalance"
+import { closeOrder } from "../exchange/bybit/closeOrder"
+import { getPnl } from "../exchange/bybit/getPnl"
+import { buy } from "../exchange/bybit/buy"
+import { sell } from "../exchange/bybit/sell"
+import { exitOrder } from "../exchange/bybit/exit"
 
 
 //create a new telegraph instance form the telegraf class
@@ -94,7 +94,7 @@ bot.command('exit', async (ctx: any) => {
 
 bot.command('buytokeuniswap', async (ctx: any) => {
     try {
-        buyTokenUniswap()
+        buyTokenUniswap(ctx)
     } catch (error) {
         console.log(error)
         let message = "Could not buy token"

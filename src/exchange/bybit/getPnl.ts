@@ -1,8 +1,9 @@
 import { schedule } from "node-cron"
 import { start } from "repl"
-import { sendMessage } from "../bot"
-import { ConfigParams } from "../config"
-import { BybitExchange } from "../exchange"
+import { sendMessage } from "../../bot"
+import { ConfigParams } from "../../config"
+import { BybitExchange } from "./bybit"
+
 const getOptions = {
     key: ConfigParams.API_KEY,
     secret: ConfigParams.API_SECRET,

@@ -1,5 +1,5 @@
 import { ConfigParams } from "../config";
-import { BybitExchange } from "../exchange/bybit";
+import { BybitExchange } from "../exchange/bybit/bybit";
 import { Request, Response } from "express";
 
 const bybitExchange = new BybitExchange({
@@ -13,7 +13,7 @@ const bybitExchange = new BybitExchange({
 
 async function getKline(req: Request, res: Response) {
     if (req.body) {
-        let { symbol} = req.body
+        let { symbol } = req.body
         const result = await bybitExchange.getKline(symbol)
         res.status(200).json({
             result: result

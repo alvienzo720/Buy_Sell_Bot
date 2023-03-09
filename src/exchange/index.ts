@@ -1,1 +1,1 @@
-export * from './bybit'
+export * from './bybit/bybit'
