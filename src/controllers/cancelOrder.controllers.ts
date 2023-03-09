@@ -1,5 +1,5 @@
 import { ConfigParams } from "../config";
-import { BybitExchange } from "../exchange/bybit";
+import { BybitExchange } from "../exchange/bybit/bybit";
 import { Request, Response } from "express";
 
 const bybitExchange = new BybitExchange({
@@ -20,7 +20,7 @@ async function cancleOrderController(req: Request, res: Response) {
             error: "no request body"
         })
     } else {
-        const result = await bybitExchange.closeOrder({symbol:'BTCUSDT'})
+        const result = await bybitExchange.closeOrder({ symbol: 'BTCUSDT' })
         if (result === true) {
             res.status(200).json({
                 success: true,

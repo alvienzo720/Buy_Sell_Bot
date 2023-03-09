@@ -1,5 +1,5 @@
 import { ConfigParams } from "../config";
-import { BybitExchange } from "../exchange/bybit";
+import { BybitExchange } from "../exchange/bybit/bybit";
 import { Request, Response } from "express";
 
 const bybitExchange = new BybitExchange({
@@ -30,7 +30,7 @@ async function makeOrder(req: Request, res: Response) {
             if (result) {
                 await bybitExchange.chasingOrder({ maxretries: 4, symbol: result.symbol, orderId: result?.order_id, trailByps: 0.05, side: result?.side })
 
-            }else {
+            } else {
                 res.status(200).json({ result: result })
 
 

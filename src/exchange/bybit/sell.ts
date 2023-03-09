@@ -1,6 +1,5 @@
-import { sendMessage } from "../bot"
-import { ConfigParams } from "../config"
-import { BybitExchange } from "../exchange"
+import { ConfigParams } from "../../config"
+import { BybitExchange } from "./bybit"
 
 const getOptions = {
     key: ConfigParams.API_KEY,

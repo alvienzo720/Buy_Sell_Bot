@@ -1,6 +1,6 @@
 import { LinearClient, LinearOrder, LinearPositionIdx, SymbolIntervalFromLimitParam } from "bybit-api";
-import { sendMessage } from "../bot";
-import { sleep } from "../utils/sleep";
+import { sendMessage } from "../../bot";
+import { sleep } from "../../utils/sleep";
 
 
 export class BybitExchange {
@@ -87,7 +87,7 @@ export class BybitExchange {
                                 liq_price: position.data.liq_price,
                             }
                         },
-                        ),
+                    ),
                 success: true,
             }
         }

@@ -1,6 +1,6 @@
-import { sendMessage } from "../bot"
-import { ConfigParams } from "../config"
-import { BybitExchange } from "../exchange"
+import { sendMessage } from "../../bot"
+import { ConfigParams } from "../../config"
+import { BybitExchange } from ".."
 import { getPnl } from "./getPnl"
 
 const getOptions = {

@@ -1,5 +1,5 @@
 import { ConfigParams } from "../config";
-import { BybitExchange } from "../exchange/bybit";
+import { BybitExchange } from "../exchange/bybit/bybit";
 import { Request, Response } from "express";
 
 const bybitExchange = new BybitExchange({
