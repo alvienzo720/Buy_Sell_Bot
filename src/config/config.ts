@@ -6,7 +6,6 @@ export const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
 export const provider = new ethers.providers.JsonRpcProvider('https://sepolia.infura.io/v3/ec84c9b967de4010b5ace262fa78bb6e')
 
 
-
 export const ConfigParams = {
     API_KEY: process.env.API_KEY || "",
     API_SECRET: process.env.API_SECRET || "",
