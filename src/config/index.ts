@@ -1,2 +1,2 @@
 export * from './config'
-export * from './UniswapABI'
+export * from './ABI'
