@@ -35,9 +35,9 @@ export const exitOrder = async () => {
                 if (ret_code === 0 && result) {
                     getPnl.stop()
                     let message = `Position Closed`
-                    message += `\n Symbol: \`${result?.symbol}\``
-                    message += `\n Order Id: \` ${result?.price}\``
-                    message += `\n Oty: \`${result?.qty}\``
+                    message += `\n Symbol: \`${result.symbol}\``
+                    message += `\n Order Id: \` ${result.price}\``
+                    message += `\n Oty: \`${result.qty}\``
                     message += `\n Side: \`${side}\``
                     message += `\n pnl: \` ${realisedPnl}\``
                     sendMessage(message)
