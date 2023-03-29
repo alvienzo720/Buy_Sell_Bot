@@ -23,11 +23,11 @@ export const buy = async () => {
     const { result, ret_code } = await bybit.makeOrder(params)
     if (ret_code === 0) {
         let message = `Placing an Order now`
-        message += `\n Symbol: \`${result?.symbol}\``
-        message += `\n Order Id: \` ${result?.price}\``
-        message += `\n Oty: \`${result?.qty}\``
-        message += `\n Side: \`${result?.side}\``
-        message += `\n Order Status: \` ${result?.order_status}\``
+        message += `\n Symbol: \`${result.symbol}\``
+        message += `\n Order Id: \` ${result.price}\``
+        message += `\n Oty: \`${result.qty}\``
+        message += `\n Side: \`${result.side}\``
+        message += `\n Order Status: \` ${result.order_status}\``
         sendMessage(message)
         getPnl.start()
     }
