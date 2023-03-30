@@ -10,7 +10,7 @@ const wallet = new ethers.Wallet(UniswapConfigs.privateKey);
 const my_signer = wallet.connect(provider);
 const router = new ethers.Contract(UniswapConfigs.routerAddress, ABI, my_signer);
 
-async function buyTokenUniswap(tx:any) {
+async function buyTokenUniswap(tx: any) {
     try {
         const tx = await router.swapExactETHForTokens(
             amountOutMin,
@@ -29,9 +29,9 @@ async function buyTokenUniswap(tx:any) {
         message += `\n Hash: \`${tx.hash}\``
         message += `\n Value: \`${ethers.utils.formatEther(tx.value)}\``
         message += `\n To: \` ${tx.to}\``
-        message += `\n From: \`${tx.from}\``
         message += `\n Nonce: \`${tx.nonce}\``
-        message += `\n Chain ID: \` ${tx.chainId}\``
+
+
         // await tx.wait();
         sendMessage(message)
     } catch (error) {

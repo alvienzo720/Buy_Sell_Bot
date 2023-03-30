@@ -18,7 +18,6 @@ export const buy = async () => {
         symbol: 'BTCUSDT', side: 'Buy', qty: 0.5, order_type: 'Limit',
         time_in_force: 'GoodTillCancel', reduce_only: false, close_on_trigger: false, price, position_idx: 0
     }
-
     params.price = params.side === 'Buy' ? price - 0.05 : price + 0.05
     const { result, ret_code } = await bybit.makeOrder(params)
     if (ret_code === 0) {
@@ -31,6 +30,4 @@ export const buy = async () => {
         sendMessage(message)
         getPnl.start()
     }
-
-
 }
