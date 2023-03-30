@@ -21,23 +21,17 @@ async function sellTokenUniswap() {
                 maxPriorityFeePerGas: ethers.utils.parseUnits("5", "gwei")
             }
         );
-
         console.log(tx);
+        // await tx.wait();
+        let txRecipt = await tx.wait() 
         let message = `Token Sold Successfully`
-        message += `\n Hash: \`${tx.hash}\``
-        message += `\n Value: \`${ethers.utils.formatEther(tx.value)}\``
-        message += `\n To: \` ${tx.to}\``
-        message += `\n From: \`${tx.from}\``
-        message += `\n Nonce: \`${tx.nonce}\``
-        message += `\n Chain ID: \` ${tx.chainId}\``
-        await tx.wait();
+        message += `\n Hash: \`${txRecipt.hash}\``
+        message += `\n Value: \`${ethers.utils.formatEther(txRecipt.value)}\``
+        message += `\n To: \` ${txRecipt.to}\``
+        message += `\n Nonce: \`${txRecipt.nonce}\``
         sendMessage(message)
-
-
     } catch (error) {
         console.log(error);
-
-
     }
 
 }
